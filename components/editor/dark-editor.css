@@ -63,21 +63,13 @@
   --basePageBg: black;
   background: var(--basePageBg);
 }
-/* Set height only for the writing area (not the toolbar) */
-.mdxeditor-contenteditable {
-  min-height: 300px !important; /* Ensures a proper height */
-  max-height: 500px !important; /* Optional, prevents excessive height */
-  /* overflow-y: auto !important; Adds scrollbar when needed */
-}
-
-/* Ensure the overall editor does not force extra space */
-.mdx-editor {
-  display: flex;
-  flex-direction: column;
-}
 
 /* Prevent toolbar from expanding */
 .mdxeditor-toolbar {
   padding: 4px 8px !important;
   min-height: 40px !important; /* Adjust as needed */
+}
+
+.mdxeditor-rich-text-editor {
+  height: 400px !important;
 }
