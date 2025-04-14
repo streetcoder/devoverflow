@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   DefaultValues,
   FieldValues,
@@ -9,6 +10,7 @@ import {
   SubmitHandler,
   useForm,
 } from "react-hook-form";
+import { toast } from "sonner";
 import { z, ZodType } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -22,12 +24,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import ROUTES from "@/constants/routes";
+import { ActionResponse } from "@/types/global";
 
 interface AuthFormProps<T extends FieldValues> {
   schema: ZodType<T>;
   defaultValues: T;
-  onSubmit: (data: T) => Promise<{ success: boolean }>;
-  formType: "SIGN_IN | SIGN_UP";
+  onSubmit: (data: T) => Promise<ActionResponse>;
+  formType: "SIGN_IN" | "SIGN_UP";
 }
 
 const AuthForm = <T extends FieldValues>({
@@ -35,14 +38,26 @@ const AuthForm = <T extends FieldValues>({
   defaultValues,
   formType,
   onSubmit,
-}: AutoFormProps<T>) => {
-  // 1. Define your form.
+}: AuthFormProps<T>) => {
+  const router = useRouter();
+
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: defaultValues as DefaultValues<T>,
   });
 
-  const handleSubmit: SubmitHandler<T> = async () => {};
+  const handleSubmit: SubmitHandler<T> = async (data) => {
+    const result = (await onSubmit(data)) as ActionResponse;
+
+    if (result?.success) {
+      toast.success("Success!");
+
+      router.push(ROUTES.HOME);
+    } else {
+      toast.error("An error occurred");
+    }
+  };
+
   const buttonText = formType === "SIGN_IN" ? "Sign In" : "Sign Up";
 
   return (
@@ -90,7 +105,7 @@ const AuthForm = <T extends FieldValues>({
 
         {formType === "SIGN_IN" ? (
           <p>
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link
               href={ROUTES.SIGN_UP}
               className="paragraph-semibold primary-text-gradient"
