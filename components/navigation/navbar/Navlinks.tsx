@@ -8,7 +8,13 @@ import React from "react";
 import { SheetClose } from "@/components/ui/sheet";
 import { sidebarLinks } from "@/constants";
 import { cn } from "@/lib/utils";
-const Navlinks = ({ isMobileNav = false }: { isMobileNav?: boolean }) => {
+const Navlinks = ({
+  isMobileNav = false,
+  userId,
+}: {
+  isMobileNav?: boolean;
+  userId?: string;
+}) => {
   const pathname = usePathname();
 
   return (
