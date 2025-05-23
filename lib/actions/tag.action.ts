@@ -1,6 +1,13 @@
+import { console } from "inspector";
+
 import { FilterQuery } from "mongoose";
 
 import { Question, Tag } from "@/database";
+import {
+  PaginatedSearchParams,
+  ActionResponse,
+  ErrorResponse,
+} from "@/types/global";
 
 import action from "../handlers/action";
 import handleError from "../handlers/error";
@@ -77,7 +84,7 @@ export const getTags = async (
 export const getTagQuestions = async (
   params: GetTagQuestionsParams
 ): Promise<
-  ActionResponse<{ tags: Tag; questions: Question[]; isNext: boolean }>
+  ActionResponse<{ tag: Tag; questions: Question[]; isNext: boolean }>
 > => {
   const validationResult = await action({
     params,
@@ -95,7 +102,6 @@ export const getTagQuestions = async (
 
   try {
     const tag = await Tag.findById(tagId);
-
     if (!tag) throw new Error("Tag not found");
 
     const filterQuery: FilterQuery<typeof Question> = {
@@ -103,7 +109,7 @@ export const getTagQuestions = async (
     };
 
     if (query) {
-      filterQuery.title = { name: { $regex: query, $options: "i" } };
+      filterQuery.title = { $regex: query, $options: "i" };
     }
 
     const totalQuestions = await Question.countDocuments(filterQuery);

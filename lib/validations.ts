@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-import Question from "@/database/question.model";
-
 export const SignInSchema = z.object({
   email: z
     .string()
@@ -89,10 +87,7 @@ export const UserSchema = z.object({
 export const AccountSchema = z.object({
   userId: z.string().min(1, { message: "User ID is required." }),
   name: z.string().min(1, { message: "Name is required." }),
-  image: z
-    .string()
-    .url({ message: "Please provide a valid image URL." })
-    .optional(),
+  image: z.string().url({ message: "Please provide a valid URL." }).optional(),
   password: z
     .string()
     .min(6, { message: "Password must be at least 6 characters long." })
@@ -111,7 +106,7 @@ export const AccountSchema = z.object({
   provider: z.string().min(1, { message: "Provider is required." }),
   providerAccountId: z
     .string()
-    .min(1, { message: "Provider account ID is required." }),
+    .min(1, { message: "Provider Account ID is required." }),
 });
 
 export const SignInWithOAuthSchema = z.object({
@@ -143,10 +138,10 @@ export const PaginatedSearchParamsSchema = z.object({
   page: z.number().int().positive().default(1),
   pageSize: z.number().int().positive().default(10),
   query: z.string().optional(),
-  sort: z.enum(["asc", "desc"]).optional(),
   filter: z.string().optional(),
+  sort: z.string().optional(),
 });
 
 export const GetTagQuestionsSchema = PaginatedSearchParamsSchema.extend({
-  tag: z.string().min(1, { message: "Tag is required." }),
+  tagId: z.string().min(1, { message: "Tag ID is required." }),
 });
