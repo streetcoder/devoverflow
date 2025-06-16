@@ -6,12 +6,14 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { formatNumber } from "@/lib/utils";
+import { ActionResponse } from "@/types/global";
 
 interface Params {
   upvotes: number;
   hasupVoted: boolean;
   downvotes: number;
   hasdownVoted: boolean;
+  hasVotedPromise?: Promise<ActionResponse<HasVotedResponse>>;
 }
 
 const Votes = ({ upvotes, downvotes, hasupVoted, hasdownVoted }: Params) => {
