@@ -68,9 +68,9 @@ const QuestionDetails = async ({ params }: RouteParams) => {
             <Suspense fallback={<div>Loading...</div>}>
               <Votes
                 upvotes={question.upvotes}
-                hasupVoted={true}
                 downvotes={question.downvotes}
-                hasdownVoted={false}
+                targetType="question"
+                targetId={question._id}
                 hasVotedPromise={hasVotedPromise}
               />
             </Suspense>
