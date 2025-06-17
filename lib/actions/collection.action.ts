@@ -1,6 +1,6 @@
 "use server";
 
-import mongoose, { PipelineStage } from "mongoose";
+import mongoose, { FilterQuery, PipelineStage } from "mongoose";
 import { revalidatePath } from "next/cache";
 
 import ROUTES from "@/constants/routes";
@@ -14,7 +14,10 @@ import {
 
 import action from "../handlers/action";
 import handleError from "../handlers/error";
-import { CollectionBaseSchema } from "../validations";
+import {
+  CollectionBaseSchema,
+  PaginatedSearchParamsSchema,
+} from "../validations";
 
 export async function toggleSaveQuestion(
   params: CollectionBaseParams
@@ -105,7 +108,7 @@ export async function getSavedQuestions(
 ): Promise<ActionResponse<{ collection: Collection[]; isNext: boolean }>> {
   const validationResult = await action({
     params,
-    schema: CollectionBaseSchema,
+    schema: PaginatedSearchParamsSchema,
     authorize: true,
   });
 
