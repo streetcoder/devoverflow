@@ -1,4 +1,4 @@
-"user server";
+"use server";
 
 import { FilterQuery } from "mongoose";
 
@@ -71,7 +71,10 @@ export async function getUsers(
 
     return {
       success: true,
-      data: { JSON.parse(JSON.stringify(users)) , isNext },
+      data: {
+        users: JSON.parse(JSON.stringify(users)),
+        isNext,
+      },
     };
   } catch (error) {
     return handleError(error) as ErrorResponse;
