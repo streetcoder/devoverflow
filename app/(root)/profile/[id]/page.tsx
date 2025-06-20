@@ -1,9 +1,9 @@
 import dayjs from "dayjs";
-import { Divide } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { auth } from "@/auth";
+import AnswerCard from "@/components/cards/AnswerCard";
 import QuestionCard from "@/components/cards/QuestionCard";
 import DataRenderer from "@/components/DataRenderer";
 import Pagination from "@/components/Pagination";
@@ -12,12 +12,13 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ProfileLink from "@/components/user/ProfileLink";
 import Stats from "@/components/user/Stats";
 import UserAvatar from "@/components/UserAvatar";
-import ROUTES from "@/constants/routes";
-import { EMPTY_QUESTION } from "@/constants/states";
-import { getUser, getUserQuestions } from "@/lib/actions/user.action";
+import { EMPTY_ANSWERS, EMPTY_QUESTION } from "@/constants/states";
+import {
+  getUser,
+  getUserAnswers,
+  getUserQuestions,
+} from "@/lib/actions/user.action";
 import { RouteParams } from "@/types/global";
-
-import page from "../../page";
 
 const Profile = async ({ params, searchParams }: RouteParams) => {
   const { id } = await params;
@@ -51,7 +52,18 @@ const Profile = async ({ params, searchParams }: RouteParams) => {
     pageSize: Number(pageSize) || 10,
   });
 
+  const {
+    success: userAnswersSuccess,
+    data: userAnswers,
+    error: userAnswersError,
+  } = await getUserAnswers({
+    userId: id,
+    page: Number(page) || 1,
+    pageSize: Number(pageSize) || 10,
+  });
+
   const { questions, isNext: hasMoreQuestions } = userQuestions!;
+  const { answers, isNext: hasMoreAnswers } = userAnswers!;
 
   const { _id, name, image, portfolio, location, createdAt, username, bio } =
     user;
@@ -139,7 +151,7 @@ const Profile = async ({ params, searchParams }: RouteParams) => {
               empty={EMPTY_QUESTION}
               success={userQuestionsSuccess}
               error={userQuestionsError}
-              render={(hotQuestions) => (
+              render={(questions) => (
                 <div className="flex w-full flex-col gap-6">
                   {questions.map((question) => (
                     <QuestionCard key={question._id} question={question} />
@@ -151,7 +163,26 @@ const Profile = async ({ params, searchParams }: RouteParams) => {
           </TabsContent>
 
           <TabsContent value="answers" className="flex w-full flex-col gap-6">
-            List of Answers
+            <DataRenderer
+              data={answers}
+              empty={EMPTY_ANSWERS}
+              success={userAnswersSuccess}
+              error={userAnswersError}
+              render={(answers) => (
+                <div className="flex w-full flex-col gap-6">
+                  {answers.map((answer) => (
+                    <AnswerCard
+                      key={answer._id}
+                      {...answer}
+                      content={answer.content.slice(0, 27)}
+                      containerClasses="card-wrapper rounded-[10px] px-7 py-9 sm:px-11"
+                      showReadMore
+                    />
+                  ))}
+                </div>
+              )}
+            />
+            <Pagination page={page} isNext={hasMoreAnswers || false} />
           </TabsContent>
         </Tabs>
       </section>
