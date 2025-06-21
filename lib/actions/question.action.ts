@@ -377,7 +377,7 @@ export async function deleteQuestion(
       throw new Error("You are not authorized to delete this question");
 
     // Delete related entries inside the transaction
-    // await Collection.deleteMany({ question: questionId }).session(session);
+    await Collection.deleteMany({ question: questionId }).session(session);
     await TagQuestion.deleteMany({ question: questionId }).session(session);
 
     // For all tags of Question, find them and reduce their count
